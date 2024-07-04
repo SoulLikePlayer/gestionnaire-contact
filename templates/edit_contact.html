@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Modifier le Contact</h2>
+<form action="{{ url_for('edit_contact', id=contact.id) }}" method="post">
+    <label for="name">Nom :</label>
+    <input type="text" id="name" name="name" value="{{ contact.name }}" required><br>
+    <label for="phone">Téléphone :</label>
+    <input type="text" id="phone" name="phone" value="{{ contact.phone }}"><br>
+    <label for="email">Email :</label>
+    <input type="email" id="email" name="email" value="{{ contact.email }}"><br>
+    <button type="submit" class="btn">Modifier</button>
+</form>
+{% endblock %}

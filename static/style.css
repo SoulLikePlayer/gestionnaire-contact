@@ -5,29 +5,54 @@ body {
     padding: 20px;
 }
 
-h1, h2 {
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
     color: #333;
 }
 
-ul {
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #007BFF;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.btn-danger {
+    background: #FF0000;
+}
+
+.btn:hover {
+    background: #0056b3;
+}
+
+.btn-danger:hover {
+    background: #cc0000;
+}
+
+.contacts-list {
     list-style-type: none;
     padding: 0;
 }
 
-li {
+.contacts-list li {
     background: #fff;
     margin: 10px 0;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-}
-
-form {
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    max-width: 400px;
 }
 
 label {
@@ -43,17 +68,4 @@ input[type="email"] {
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-}
-
-button {
-    padding: 10px 15px;
-    background: #007BFF;
-    border: none;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #0056b3;
 }

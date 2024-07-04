@@ -1,18 +1,31 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<a href="{{ url_for('add_contact') }}" class="btn">Ajouter un Contact</a>
-<ul class="contacts-list">
-    {% for contact in contacts %}
-    <li>
-        <strong>{{ contact.name }}</strong><br>
-        Téléphone: {{ contact.phone }}<br>
-        Email: {{ contact.email }}<br>
-        <a href="{{ url_for('edit_contact', id=contact.id) }}" class="btn">Modifier</a>
-        <form action="{{ url_for('delete_contact', id=contact.id) }}" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-danger">Supprimer</button>
-        </form>
-    </li>
-    {% endfor %}
-</ul>
+<h2>Liste des Contacts</h2>
+<a href="{{ url_for('add_contact') }}">Ajouter un Contact</a>
+{% if contacts %}
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Téléphone</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+        {% for contact in contacts %}
+        <tr>
+            <td>{{ contact.name }}</td>
+            <td>{{ contact.phone }}</td>
+            <td>{{ contact.email }}</td>
+            <td>
+                <a href="{{ url_for('edit_contact', id=contact.id) }}">Modifier</a>
+                <form action="{{ url_for('delete_contact', id=contact.id) }}" method="post" style="display:inline;">
+                    <button type="submit">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p>Aucun contact trouvé.</p>
+{% endif %}
 {% endblock %}

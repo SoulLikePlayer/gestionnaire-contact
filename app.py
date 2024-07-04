@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
 from contextlib import contextmanager
+import os
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 DATABASE = 'database/contacts.db'
 
@@ -15,6 +17,17 @@ def get_db_connection():
     finally:
         conn.close()
 
+def validate_phone_number(country, phone):
+    if country == '+1' and len(phone) != 10:
+        return False, 'Le numéro de téléphone doit contenir 10 chiffres pour les États-Unis/Canada.'
+    if country == '+33' and len(phone) != 9:
+        return False, 'Le numéro de téléphone doit contenir 9 chiffres pour la France.'
+    if country == '+44' and len(phone) != 10:
+        return False, 'Le numéro de téléphone doit contenir 10 chiffres pour le Royaume-Uni.'
+    if country == '+49' and len(phone) != 10:
+        return False, 'Le numéro de téléphone doit contenir 10 chiffres pour l’Allemagne.'
+    return True, ''
+
 @app.route('/')
 def index():
     with get_db_connection() as conn:
@@ -25,8 +38,16 @@ def index():
 def add_contact():
     if request.method == 'POST':
         name = request.form['name']
+        country = request.form['country']
         phone = request.form['phone']
         email = request.form['email']
+
+        valid, message = validate_phone_number(country, phone)
+        if not valid:
+            flash(message)
+            return redirect(url_for('add_contact'))
+
+        phone = country + phone
 
         with get_db_connection() as conn:
             conn.execute('INSERT INTO contacts (name, phone, email) VALUES (?, ?, ?)', (name, phone, email))
@@ -43,8 +64,16 @@ def edit_contact(id):
 
         if request.method == 'POST':
             name = request.form['name']
+            country = request.form['country']
             phone = request.form['phone']
             email = request.form['email']
+
+            valid, message = validate_phone_number(country, phone)
+            if not valid:
+                flash(message)
+                return redirect(url_for('edit_contact', id=id))
+
+            phone = country + phone
 
             conn.execute('UPDATE contacts SET name = ?, phone = ?, email = ? WHERE id = ?', (name, phone, email, id))
             conn.commit()

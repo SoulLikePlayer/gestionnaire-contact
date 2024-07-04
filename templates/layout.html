@@ -4,11 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestionnaire de Contacts</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function validatePhoneNumber() {
+            const country = document.getElementById('country').value;
+            const phone = document.getElementById('phone').value;
+            let valid = false;
+            let message = '';
+
+            switch (country) {
+                case '+1':
+                    valid = /^\d{10}$/.test(phone);
+                    message = 'Le numéro de téléphone doit contenir 10 chiffres pour les États-Unis/Canada.';
+                    break;
+                case '+33':
+                    valid = /^\d{9}$/.test(phone);
+                    message = 'Le numéro de téléphone doit contenir 9 chiffres pour la France.';
+                    break;
+                case '+44':
+                    valid = /^\d{10}$/.test(phone);
+                    message = 'Le numéro de téléphone doit contenir 10 chiffres pour le Royaume-Uni.';
+                    break;
+                case '+49':
+                    valid = /^\d{10}$/.test(phone);
+                    message = 'Le numéro de téléphone doit contenir 10 chiffres pour l’Allemagne.';
+                    break;
+                default:
+                    valid = true;
+                    break;
+            }
+
+            if (!valid) {
+                alert(message);
+            }
+
+            return valid;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Gestionnaire de Contacts</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </div>
 </body>

@@ -30,9 +30,17 @@ def validate_phone_number(country, phone):
 
 @app.route('/')
 def index():
+    return redirect(url_for('paginate', page_num=1))
+
+@app.route('/page/<int:page_num>')
+def paginate(page_num):
+    limit = 10  # Number of contacts per page
+    offset = (page_num - 1) * limit
     with get_db_connection() as conn:
-        contacts = conn.execute('SELECT * FROM contacts').fetchall()
-    return render_template('index.html', contacts=contacts)
+        contacts = conn.execute("SELECT * FROM contacts LIMIT ? OFFSET ?", (limit, offset)).fetchall()
+        total_contacts = conn.execute("SELECT COUNT(*) FROM contacts").fetchone()[0]
+    total_pages = (total_contacts + limit - 1) // limit
+    return render_template('index.html', contacts=contacts, total_pages=total_pages, current_page=page_num)
 
 @app.route('/add', methods=('GET', 'POST'))
 def add_contact():
@@ -93,11 +101,17 @@ def delete_contact(id):
 @app.route('/search', methods=('GET', 'POST'))
 def search():
     query = request.args.get('query')
-    with get_db_connection() as conn:
-        contacts = conn.execute("SELECT * FROM contacts WHERE name LIKE ? OR phone LIKE ? OR email LIKE ?", 
-                                ('%' + query + '%', '%' + query + '%', '%' + query + '%')).fetchall()
-    return render_template('index.html', contacts=contacts)
+    page_num = request.args.get('page', 1, type=int)
+    limit = 10  # Number of contacts per page
+    offset = (page_num - 1) * limit
 
+    with get_db_connection() as conn:
+        contacts = conn.execute("SELECT * FROM contacts WHERE name LIKE ? OR phone LIKE ? OR email LIKE ? LIMIT ? OFFSET ?", 
+                                ('%' + query + '%', '%' + query + '%', '%' + query + '%', limit, offset)).fetchall()
+        total_contacts = conn.execute("SELECT COUNT(*) FROM contacts WHERE name LIKE ? OR phone LIKE ? OR email LIKE ?", 
+                                      ('%' + query + '%', '%' + query + '%', '%' + query + '%')).fetchone()[0]
+    total_pages = (total_contacts + limit - 1) // limit
+    return render_template('index.html', contacts=contacts, total_pages=total_pages, current_page=page_num, query=query)
 
 if __name__ == '__main__':
     app.run(debug=True)

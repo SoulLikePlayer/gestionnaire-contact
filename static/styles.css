@@ -86,3 +86,25 @@ ul li {
     padding: 10px;
     margin-top: 10px;
 }
+
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    margin: 0 5px;
+    padding: 8px 16px;
+    text-decoration: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #0056b3;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+}

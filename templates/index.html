@@ -3,6 +3,11 @@
 {% block content %}
 <h2>Liste des Contacts</h2>
 <a href="{{ url_for('add_contact') }}">Ajouter un Contact</a>
+<form action="{{ url_for('search') }}" method="get">
+    <input type="text" name="query" placeholder="Rechercher un contact">
+    <button type="submit">Rechercher</button>
+</form>
+
 {% if contacts %}
     <table>
         <tr>

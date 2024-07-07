@@ -90,5 +90,14 @@ def delete_contact(id):
 
     return redirect(url_for('index'))
 
+@app.route('/search', methods=('GET', 'POST'))
+def search():
+    query = request.args.get('query')
+    with get_db_connection() as conn:
+        contacts = conn.execute("SELECT * FROM contacts WHERE name LIKE ? OR phone LIKE ? OR email LIKE ?", 
+                                ('%' + query + '%', '%' + query + '%', '%' + query + '%')).fetchall()
+    return render_template('index.html', contacts=contacts)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

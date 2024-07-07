@@ -1,42 +1,43 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h2>Liste des Contacts</h2>
-<a href="{{ url_for('add_contact') }}">Ajouter un Contact</a>
-<form action="{{ url_for('search') }}" method="get">
-    <input type="text" name="query" placeholder="Rechercher un contact">
-    <button type="submit">Rechercher</button>
-</form>
+<h2 class="my-4">Liste des Contacts</h2>
+<div class="d-flex justify-content-between mb-3">
+    <a href="{{ url_for('add_contact') }}" class="btn btn-primary">Ajouter un Contact</a>
+    <form action="{{ url_for('search') }}" method="get" class="form-inline">
+        <input type="text" name="query" class="form-control mr-2" placeholder="Rechercher un contact">
+        <button type="submit" class="btn btn-secondary">Rechercher</button>
+    </form>
+</div>
 
 {% if contacts %}
-    <table>
-        <tr>
-            <th>Nom</th>
-            <th>Téléphone</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
+    <div class="row">
         {% for contact in contacts %}
-        <tr>
-            <td>{{ contact.name }}</td>
-            <td>{{ contact.phone }}</td>
-            <td>{{ contact.email }}</td>
-            <td>
-                <a href="{{ url_for('edit_contact', id=contact.id) }}">Modifier</a>
-                <form action="{{ url_for('delete_contact', id=contact.id) }}" method="post" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contact ?');">
-                    <button type="submit">Supprimer</button>
-                </form>
-            </td>
-        </tr>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ contact.name }}</h5>
+                    <p class="card-text">
+                        <strong>Téléphone:</strong> {{ contact.phone }}<br>
+                        <strong>Email:</strong> {{ contact.email }}
+                        <strong>Catégorie:</strong> {{ contact.category }}
+                    </p>
+                    <a href="{{ url_for('edit_contact', id=contact.id) }}" class="btn btn-primary">Modifier</a>
+                    <form action="{{ url_for('delete_contact', id=contact.id) }}" method="post" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contact ?');">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </table>
+    </div>
 
-    <div class="pagination">
+    <div class="pagination justify-content-center">
         {% for page_num in range(1, total_pages + 1) %}
-            <a href="{{ url_for('paginate', page_num=page_num) }}" class="{% if current_page == page_num %}active{% endif %}">{{ page_num }}</a>
+            <a href="{{ url_for('paginate', page_num=page_num) }}" class="btn btn-secondary {% if current_page == page_num %}active{% endif %}">{{ page_num }}</a>
         {% endfor %}
     </div>
 {% else %}
-    <p>Aucun contact trouvé.</p>
+    <p class="alert alert-warning">Aucun contact trouvé.</p>
 {% endif %}
 {% endblock %}
